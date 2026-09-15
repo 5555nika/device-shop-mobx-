@@ -1,7 +1,7 @@
 # React + TypeScript + Vite
 
  # How to Run
-🚀  [Посмотреть проект вживую (Live Demo)](https://5555nika.github.io/device-shop-mobx-/) 
+🚀  [Посмотреть проект вживую (Live Demo)](https://device-shop-mobx.vercel.app) 
 
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
