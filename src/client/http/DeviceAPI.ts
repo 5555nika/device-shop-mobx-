@@ -1,97 +1,182 @@
 import { $authHost, $host } from "./index"
 import type { IBrand, IDevice, IType } from "../types"
+import {
+    getLocalTypes,
+    saveLocalType,
+    getLocalBrands,
+    saveLocalBrand,
+    getLocalDevices,
+    saveLocalDevice,
+    getLocalBasket,
+    addLocalBasket,
+    removeLocalBasket,
+    clearLocalBasket
+} from "./mockData"
+
+// ============ TYPES API ============
 
 export const fetchTypes = async (): Promise<IType[]> => {
-    const { data } = await $host.get<IType[]>('/api/type')
-    return data
+    try {
+        const { data } = await $host.get<IType[]>('/api/type')
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, загружаем локальные типы:', e)
+        return getLocalTypes()
+    }
 }
 
 export const createType = async (type: IType) => {
-    const { data } = await $authHost.post('/api/type', type)
-    return data
+    try {
+        const { data } = await $authHost.post('/api/type', type)
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, сохраняем тип локально:', e)
+        return saveLocalType(type)
+    }
 }
 
+// ============ BRANDS API ============
+
 export const fetchBrands = async (): Promise<IBrand[]> => {
-    const { data } = await $host.get<IBrand[]>('/api/brand')
-    return data
+    try {
+        const { data } = await $host.get<IBrand[]>('/api/brand')
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, загружаем локальные бренды:', e)
+        return getLocalBrands()
+    }
 }
 
 export const createBrand = async (brand: IBrand) => {
-    const { data } = await $authHost.post('/api/brand', brand)
-    return data
-}
-// (Получить список товаров с фильтрацией и пагинацией)
-export const fetchDevices = async (typeId?: number, brandId?: number, page?: number, limit = 9)
-            : Promise<{ count: number; rows: IDevice[] }> => {
-    const { data } = await $host.get<{ count: number; rows: IDevice[] }>('/api/device', { // (query-параметрами)
-        params: { typeId, brandId, page, limit }
-    })
-    return data
+    try {
+        const { data } = await $authHost.post('/api/brand', brand)
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, сохраняем бренд локально:', e)
+        return saveLocalBrand(brand)
+    }
 }
 
-// params: Axios автомат. превращ. объект { typeId, brandId, page, limit } в стр. запроса вроде /api/device?typeId=1&page=2&limit=9. Это позволяет серверу отфильтровать товары по типу/бренду и вернуть только нужную страницу.
-//  Объект с количеством подходящих товаров (count) и массивом товаров для текущей страницы (rows).
+// ============ DEVICES API ============
 
+export const fetchDevices = async (
+    typeId?: number,
+    brandId?: number,
+    page = 1,
+    limit = 9
+): Promise<{ count: number; rows: IDevice[] }> => {
+    try {
+        const { data } = await $host.get<{ count: number; rows: IDevice[] }>('/api/device', {
+            params: { typeId, brandId, page, limit }
+        })
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, фильтруем устройства из локального каталога:', e)
+        let all = getLocalDevices()
 
-// FormData — это стандарт. способ отпр. данн. на сервер, когда среди этих данн. есть файлы (в нашем случае — картинка товара).
+        if (typeId) {
+            all = all.filter(d => d.typeId === Number(typeId))
+        }
+        if (brandId) {
+            all = all.filter(d => d.brandId === Number(brandId))
+        }
+
+        const count = all.length
+        const start = (page - 1) * limit
+        const rows = all.slice(start, start + limit)
+
+        return { count, rows }
+    }
+}
+
 export const createDevice = async (device: FormData) => {
-    const { data } = await $authHost.post('/api/device', device)
-    return data
+    try {
+        const { data } = await $authHost.post('/api/device', device)
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, сохраняем устройство в локальном каталоге:', e)
+        const name = device.get('name') as string || 'Новый товар'
+        const price = Number(device.get('price')) || 0
+        const typeId = Number(device.get('typeId')) || 1
+        const brandId = Number(device.get('brandId')) || 1
+        
+        let info = []
+        const rawInfo = device.get('info')
+        if (rawInfo && typeof rawInfo === 'string') {
+            try { info = JSON.parse(rawInfo) } catch {}
+        }
+
+        return saveLocalDevice({
+            name,
+            price,
+            typeId,
+            brandId,
+            img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",
+            info
+        })
+    }
 }
-
-/*
-в формате JSON невозможно напрямую передавать файлы (бинарные данные картинок). JSON умеет работать только с текстом, числами и логическими значениями.
-FormData — это встроен. в браузер инстр. (объект JS), который имитирует отпр. обычной HTML-формы с типом кодирования multipart/form-data.
-Этот формат спец. придуман для того, чтобы за один раз передавать на сервер и обычные текстовые поля, и файлы (картинки, документы, архивы).
-Как это выглядит на практике (при создании товара)?
-Когда админ. заполняет форму созд. товара, в коде созд. пустой объект FormData, а затем в него по очереди доб. («нанизываются») все поля с помощью метода .append():
-const formData = new FormData()
-// Добавляем обычный текст:
-formData.append('name', 'iPhone 15 Pro')
-formData.append('price', '100000')
-formData.append('brandId', '2')
-formData.append('typeId', '1')
-// Добавляем файл картинки (полученный из тега <input type="file">):
-formData.append('img', fileObject) // fileObject — это бинарный файл картинки
-
-Axios автоматически понимает, что это FormData, и сам делает две важные вещи:
-
-Устанавливает специальный HTTP-заголовок: Content-Type: multipart/form-data.
-Правильно упаковывает картинку в бинарный поток, чтобы сервер смог её прочитать и сохранить на диск.
-
-Что происходит на сервере?
-На сервере бэкенд использует специальный модуль (например, express-fileupload или multer), который перехватывает этот multipart/form-data запрос:
-
-Текстовые поля (name, price) он складывает в объект req.body.
-Файл картинки (img) он складывает в объект req.files (или req.file), после чего сервер сохраняет картинку в папку со статическими файлами.
-*/
 
 export const fetchOneDevice = async (id: string): Promise<IDevice> => {
-    const { data } = await $host.get<IDevice>('/api/device/' + id)
-    return data
+    try {
+        const { data } = await $host.get<IDevice>('/api/device/' + id)
+        return data
+    } catch (e) {
+        console.warn(`Сервер недоступен, ищем устройство ${id} в локальном каталоге:`, e)
+        const all = getLocalDevices()
+        const found = all.find(d => String(d.id) === String(id))
+        if (found) return found
+        return all[0] || {
+            id: Number(id),
+            name: "Устройство",
+            price: 0,
+            rating: 5,
+            img: "",
+            typeId: 1,
+            brandId: 1,
+            info: []
+        }
+    }
 }
-
 
 // ============ BASKET API ============
 
-// Загружает список товаров, которые пользователь уже добавил в корзину.
 export const fetchBasket = async () => {
-    const { data } = await $authHost.get('/api/basket');
-    return data;
-};
+    try {
+        const { data } = await $authHost.get('/api/basket')
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, загружаем корзину из localStorage:', e)
+        return getLocalBasket()
+    }
+}
 
 export const addToBasket = async (deviceId: number) => {
-    const { data } = await $authHost.post('/api/basket', { deviceId });
-    return data;
-};
+    try {
+        const { data } = await $authHost.post('/api/basket', { deviceId })
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, добавляем в корзину локально:', e)
+        return addLocalBasket(deviceId)
+    }
+}
 
 export const removeFromBasket = async (deviceId: number) => {
-    const { data } = await $authHost.delete('/api/basket/' + deviceId);
-    return data;
-};
+    try {
+        const { data } = await $authHost.delete('/api/basket/' + deviceId)
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, удаляем из корзины локально:', e)
+        return removeLocalBasket(deviceId)
+    }
+}
 
 export const clearBasket = async () => {
-    const { data } = await $authHost.delete('/api/basket');
-    return data;
-};
-
+    try {
+        const { data } = await $authHost.delete('/api/basket')
+        return data
+    } catch (e) {
+        console.warn('Сервер недоступен, очищаем корзину локально:', e)
+        return clearLocalBasket()
+    }
+}
