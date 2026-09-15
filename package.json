@@ -1,11 +1,12 @@
 {
-  "name": "my-ts-app",
+  "name": "tech-store",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "server": "tsx watch src/server/index.ts",
+    "start": "tsx src/server/index.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -39,6 +40,7 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "sequelize": "^6.37.8",
+    "tsx": "^4.22.4",
     "uuid": "^14.0.1"
   },
   "devDependencies": {
@@ -56,13 +58,11 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "tsx": "^4.22.4",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
+  "description": "Online Tech Store Fullstack Application",
   "keywords": [],
   "author": "",
   "license": "ISC"
