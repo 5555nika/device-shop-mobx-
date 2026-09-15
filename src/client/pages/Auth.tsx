@@ -1,4 +1,4 @@
-import { Layout, Card,Row, Col } from "antd"
+import { Card,Row, Col } from "antd"
 import { AuthForm } from "../components/AuthForm"
 
 export const Auth = () => {
