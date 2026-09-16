@@ -50,7 +50,6 @@ export const CreateDevice = observer(({ open, onCancel }: ICreateDevice) => {
             formData.append('typeId', String(values.typeId))
             formData.append('img', fileToUpload)
 
-            // Если добавлены характеристики через Form.List, упаковываем их в JSON
             if (values.info && values.info.length > 0) {
                 formData.append('info', JSON.stringify(values.info))
             }
@@ -62,11 +61,10 @@ export const CreateDevice = observer(({ open, onCancel }: ICreateDevice) => {
 
             message.success(`Устройство "${values.name}" успешно добавлено!`)
             handleClose()
-        } catch (e: unknown) {
+        } catch (e) {
             const err = e as AxiosError<{ message: string }>
-            const errorMessage = err.response?.data?.message || 'Ошибка при создании товара'
+            message.error(err.response?.data?.message || 'Ошибка при создании товара')
             console.error('Ошибка добавления устройства:', e)
-            message.error(errorMessage)
         } finally {
             setIsloading(false)
         }

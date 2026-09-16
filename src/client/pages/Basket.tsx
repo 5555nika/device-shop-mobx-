@@ -5,6 +5,7 @@ import { fetchBasket, removeFromBasket, clearBasket } from '../http/DeviceAPI'
 import { FaTrash, FaShoppingCart, FaCreditCard } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { SHOP_ROUTE } from '../constants/routes'
+import type { AxiosError } from 'axios'
 
 const { Title, Text } = Typography
 
@@ -18,8 +19,9 @@ export const Basket = () => {
             setIsLoading(true)
             const data = await fetchBasket()
             setBasketItems(data)
-        } catch (err: any) {
-            console.error("Ошибка при загрузке корзины:", err)
+        } catch (e) {
+            console.error("Ошибка при загрузке корзины:", e)
+            const err = e as AxiosError<{message: string}>
             message.error(err.response?.data?.message || "Не удалось загрузить корзину")
         } finally {
             setIsLoading(false)
@@ -36,7 +38,8 @@ export const Basket = () => {
             // Фильтруем из стейта удаленное устройство
             setBasketItems(prev => prev.filter(item => item.deviceId !== deviceId))
             message.success("Товар удален из корзины")
-        } catch (err: any) {
+        } catch (e) {
+            const err = e as AxiosError<{message: string}>
             message.error(err.response?.data?.message || "Ошибка при удалении товара")
         }
     }
@@ -46,7 +49,8 @@ export const Basket = () => {
             await clearBasket()
             setBasketItems([])
             message.success("Корзина успешно очищена")
-        } catch (err: any) {
+        } catch (e) {
+            const err = e as AxiosError<{message: string}>
             message.error(err.response?.data?.message || "Ошибка при очистке корзины")
         }
     }
@@ -59,7 +63,8 @@ export const Basket = () => {
                 await clearBasket()
                 setBasketItems([])
                 message.success({ content: 'Заказ успешно оформлен! Спасибо за покупку.', key: 'checkout', duration: 4 })
-            } catch (err) {
+            } catch (e) {
+                console.error('Ошибка при оформлении заказа:', e)
                 message.error({ content: 'Не удалось завершить оформление заказа', key: 'checkout' })
             }
         }, 1500)
@@ -76,7 +81,7 @@ export const Basket = () => {
     }
 
     return (
-        <Layout style={{ padding: '24px 50px', background: '#f5f5f5', minHeight: 'calc(100vh - 64px)' }}>
+        <Layout style={{ padding: '24px 50px', background: '#f5f5f5'}}>
             <Row justify="center">
                 <Col xs={24} xl={20}>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24, gap: 12 }}>

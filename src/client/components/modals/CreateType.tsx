@@ -11,9 +11,7 @@ export const CreateType = ({ open, onCancel }: ICreateType) => {
 
     const handleOk = async () => {
         try {
-            // Заставляем форму провериться и отправиться
             const values = await form.validateFields()
-            // Отправляем запрос на сервер через наше API
             await createType({id: 0, name: values.name})
             form.resetFields()
             message.success(`Тип "${values.name}" успешно добавлен!`)

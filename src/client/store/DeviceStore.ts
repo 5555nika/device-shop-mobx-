@@ -67,84 +67,6 @@ export class DeviceStore {
                 { id: 7, title: "Процессор", description: "Apple M3" },
                 { id: 8, title: "Экран", description: "16 дюймов" },
             ]
-        },
-        {
-            id: 5,
-            name: "Samsung Galaxy S24",
-            price: 90000,
-            rating: 4,
-            img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400",
-            typeId: 1,
-            brandId: 1,
-            info: [
-                { id: 3, title: "Память", description: "128 ГБ" },
-                { id: 4, title: "Процессор", description: "Exynos 2400" }
-            ]
-        },
-        {
-            id: 6,
-            name: "Lenovo IdeaPad 3",
-            price: 50000,
-            rating: 3,
-            img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400",
-            typeId: 2,
-            brandId: 3,
-            info: [
-                { id: 5, title: "Экран", description: "15.6 дюймов" },
-                { id: 6, title: "ОЗУ", description: "8 ГБ" }
-            ]
-        },
-        {
-            id: 7,
-            name: "Apple MacBook Pro",
-            price: 120000,
-            rating: 5,
-            img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
-            typeId: 2,
-            brandId: 2,
-            info: [
-                { id: 7, title: "Процессор", description: "Apple M3" },
-                { id: 8, title: "Экран", description: "16 дюймов" },
-            ]
-        },
-        {
-            id: 8,
-            name: "Samsung Galaxy S24",
-            price: 90000,
-            rating: 4,
-            img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400",
-            typeId: 1,
-            brandId: 1,
-            info: [
-                { id: 3, title: "Память", description: "128 ГБ" },
-                { id: 4, title: "Процессор", description: "Exynos 2400" }
-            ]
-        },
-        {
-            id: 9,
-            name: "Lenovo IdeaPad 3",
-            price: 50000,
-            rating: 3,
-            img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400",
-            typeId: 2,
-            brandId: 3,
-            info: [
-                { id: 5, title: "Экран", description: "15.6 дюймов" },
-                { id: 6, title: "ОЗУ", description: "8 ГБ" }
-            ]
-        },
-        {
-            id: 10,
-            name: "Apple MacBook Pro",
-            price: 120000,
-            rating: 5,
-            img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
-            typeId: 2,
-            brandId: 2,
-            info: [
-                { id: 7, title: "Процессор", description: "Apple M3" },
-                { id: 8, title: "Экран", description: "16 дюймов" },
-            ]
         }
     ]
 
@@ -156,55 +78,55 @@ export class DeviceStore {
     _page: number = 1   
     
     constructor() {
-    makeAutoObservable(this)
+        makeAutoObservable(this)
     }
 
     setTypes (types: IType[]) {
-        this._types = types;
+        this._types = types
     }
     get types() {
-        return this._types;
+        return this._types
     }
     setBrands (brands: IBrand[]) {
-        this._brands = brands;
+        this._brands = brands
     }
     get brands() {
-        return this._brands;
+        return this._brands
     }
     setDevices (devices: IDevice[]) {
-        this._devices = devices;
+        this._devices = devices
     }
     get devices() {
-        return this._devices;
+        return this._devices
     }
-    setSelectedType (type: IType) {
-        this._selectedType = type;
+    setSelectedType (type: IType | null) {
+        this._selectedType = type
     }
     get selectedType() {
-        return this._selectedType;
+        return this._selectedType
     }
-    setSelectedBrand (brand: IBrand) {
-        this._selectedBrand = brand;
+    setSelectedBrand (brand: IBrand | null) {
+        this._selectedBrand = brand
     }
     get selectedBrand() {
-        return this._selectedBrand;
+        return this._selectedBrand
     }
     setPage (page: number) {
-        this._page = page;
+        this._page = page
     }
     get page() {
-        return this._page;
+        return this._page
     }
     setTotalCount (count: number) {
-        this._totalCount = count;
+        this._totalCount = count
     }
     get totalCount() {
-        return this._totalCount;
+        return this._totalCount
     }
     setLimit (limit: number) {
-        this._limit = limit;
+        this._limit = limit
     }
     get limit() {
-        return this._limit;
+        return this._limit
     }
 }

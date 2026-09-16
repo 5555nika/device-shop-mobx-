@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Col, Row } from "antd"
+import { Col, Row, Pagination } from "antd"
 import { Brandbar } from "../components/Brandbar"
 import { Typebar } from "../components/Typebar"
 import { DeviceList } from "../components/DeviceList"
@@ -39,6 +39,13 @@ export const Shop = observer(() => {
                     </div>
                 </Col>
             </Row> 
+            <Pagination 
+            align="center"
+            style={{ marginTop: 32 }}
+            current={device.page} 
+            total={device.totalCount} 
+            pageSize={device.limit} 
+            onChange={(p) => device.setPage(p)} />                        
         </div>
     )
 })

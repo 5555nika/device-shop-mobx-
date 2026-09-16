@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import { useStore } from "../context"
-import { Row, Empty, Pagination } from "antd"
+import { Row, Empty } from "antd"
 import { DeviceItem } from "./DeviceItem"
 
 export const DeviceList = observer(() => {
@@ -19,7 +19,6 @@ export const DeviceList = observer(() => {
             {device.devices.map(dev => 
                 <DeviceItem key={dev.id} dev={dev} />           
             )}
-            <Pagination current={device.page} total={device.totalCount} pageSize={device.limit} onChange={(p) => device.setPage(p)} />
         </Row>
     )
 })
