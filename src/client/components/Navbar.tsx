@@ -30,13 +30,14 @@ export const Navbar = observer(() => {
 
             {user.isAuth ?(
             <Space> 
+                {user.user?.role === 'ADMIN' && (
                 <Button
                 type="dashed" ghost
                 icon={<LockOutlined />}
                 onClick={() => navigate(ADMIN_ROUTE)}
                 >
                     {!isMobile && 'Админ панель'}
-                </Button>
+                </Button>)}
 
                 <Button
                 type='primary' 
@@ -61,7 +62,7 @@ export const Navbar = observer(() => {
                 icon={<UserOutlined />}
                 onClick={() => navigate(LOGIN_ROUTE)}
                 > 
-                    Авторизация
+                    {!isMobile && 'Войти'}
                 </Button>
             )
         }

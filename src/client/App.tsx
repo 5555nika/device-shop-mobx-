@@ -23,13 +23,10 @@ export const App = observer(() => {
 
       try {
         const data: IJwtPayload | null  = await check() as IJwtPayload | null
-        
-        // Проверка даты истечения токена (exp):
         if (data && typeof data === 'object' && typeof data.exp === 'number') {
           const expDate = new Date(data.exp * 1000)
           console.log('Токен действителен до:', expDate.toLocaleString())
         }
-
         user.setUser(data as IUser)
         user.setIsAuth(true)
       } catch (e) {
@@ -40,6 +37,7 @@ export const App = observer(() => {
       }
     }
     checkAuth()
+
   }, [])
 
   if (isLoading) {
@@ -49,7 +47,6 @@ export const App = observer(() => {
       </Layout>
     )
   }
-
 
   return (
     <Layout style={{ background: '#fff'}}>
