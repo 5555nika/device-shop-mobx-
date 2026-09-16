@@ -152,7 +152,7 @@ export class DeviceStore {
     _selectedType: IType | null = null
     _selectedBrand: IBrand | null = null   
     _totalCount: number = 0
-    _limit: number = 3
+    _limit: number = 9
     _page: number = 1   
     
     constructor() {
