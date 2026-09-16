@@ -31,7 +31,9 @@ export const AuthForm = observer(() => {
             message.success(isLogin ? 'Успешный вход!' : 'Регистрация прошла успешно!')
         } catch (e) {
             const err = e as AxiosError<{ message: string }>
-            message.error(err.response?.data?.message || 'Ошибка авторизации')
+            const fallbackMessage = isLogin ? 'Ошибка при входе в аккаунт' : 'Ошибка при регистрации';
+
+            message.error(err.response?.data?.message || fallbackMessage)
         }
     }
     
